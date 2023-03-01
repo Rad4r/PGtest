@@ -55,14 +55,12 @@ public class LevelArranger : MonoBehaviour
             GameObject randomWall = wallObjects[Random.Range(0, wallObjects.Length)];
             currentWallDistance += randomWall.transform.localScale.x;
 
-            // if (currentWallDistance > distance) //effects the prefab scale as well
-            // {
-            //     Vector3 tempScale = randomWall.transform.localScale;
-            //     tempScale.x = distance - (currentWallDistance - randomWall.transform.localScale.x);
-            //     randomWall.transform.localScale = tempScale;
-            // }
+            if (currentWallDistance > distance) //effects the prefab scale as well
+            {
+                float remainingDistance = distance - (currentWallDistance - randomWall.transform.localScale.x);
+                randomWall = wallObjects[Mathf.RoundToInt(remainingDistance) -1];
+            }
             listOfWalls.Add(randomWall);
-            //Debug.Log("Current distance is: " + currentWallDistance);
         }
         
         return listOfWalls;
@@ -78,8 +76,17 @@ public class LevelArranger : MonoBehaviour
             GameObject currentWall = wallsToSpawn[i];
             Vector3 currentObjectScale = currentWall.transform.localScale;
             Vector3 spawnPosition = startPoint + spawnDirection * (currentObjectScale.x/2f + distanceFromStart) + Vector3.up * currentObjectScale.y/2f;
-            Instantiate(currentWall, spawnPosition, rotation, transform);
+            GameObject newWall = Instantiate(currentWall, spawnPosition, rotation, transform);
             distanceFromStart += currentObjectScale.x;
+
+            //new top section
+            GameObject topWall = Instantiate(wallObjects[Random.Range(0, wallObjects.Length)], newWall.transform.position, newWall.transform.rotation, transform);
+
+            Vector3 tempScale = topWall.transform.localScale;
+            tempScale.x = newWall.transform.localScale.x;
+            topWall.transform.localScale = tempScale;
+            
+            topWall.transform.position = newWall.transform.position + Vector3.up * currentObjectScale.y ;
         }
     }
     
