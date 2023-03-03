@@ -6,6 +6,12 @@ using Random = UnityEngine.Random;
 
 public class LevelGenerator : MonoBehaviour
 {
+    [SerializeField] 
+    private bool bottomWallVisibility;
+    
+    [SerializeField] 
+    private int wallHeight;
+    
     [SerializeField]
     private int roomNumbers;
     
@@ -17,9 +23,15 @@ public class LevelGenerator : MonoBehaviour
     
     [SerializeField]
     private Transform levelHolder;
-
+    
+    private LevelArranger _levelArranger;
     private List<Vector3> spawnedLocations;
     private int roomsLeft;
+
+    private void Awake()
+    {
+        _levelArranger = roomHolder.GetComponent<LevelArranger>();
+    }
 
     private void Start()
     {
@@ -45,6 +57,7 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    //have an availableSpawnPositions list and update it with for each by removing
     private Vector3 GetNewSpawnPosition(float xRoomScale, float zRoomScale, Vector3 currentSpawnPosition)
     {
         List<Vector3> positionsToSpawn = new List<Vector3>();
@@ -52,25 +65,38 @@ public class LevelGenerator : MonoBehaviour
         positionsToSpawn.Add(currentSpawnPosition += Vector3.right * (xRoomScale + roomSpacing));
         positionsToSpawn.Add(currentSpawnPosition += Vector3.forward * (zRoomScale + roomSpacing));
         positionsToSpawn.Add(currentSpawnPosition += Vector3.back * (zRoomScale + roomSpacing));
-
-        Vector3 newPositionToSpawn = positionsToSpawn[Random.Range(0, positionsToSpawn.Count)];
         
-        foreach (Vector3 position in spawnedLocations)
+        bool positionFound = false;
+        Vector3 newPositionToSpawn = Vector3.up * 5f;
+    
+        while (!positionFound)
         {
-            if (newPositionToSpawn == position)
-            {
-                //there is already a room there so remove it and try the other ones
-                //if none of them can fit then move onto another room as the current room
-            }
+            int randomPositionIndex = Random.Range(0, positionsToSpawn.Count);
+            newPositionToSpawn = positionsToSpawn[randomPositionIndex];
             
+            foreach (Vector3 position in spawnedLocations)
+            {
+                if (newPositionToSpawn == position)
+                {
+                    positionsToSpawn.RemoveAt(randomPositionIndex);
+                }
+                else
+                {
+                    spawnedLocations.Add(newPositionToSpawn);
+                    positionFound = true;
+                    break;
+                }
+            }
         }
-        
-        return new Vector3();
+        return newPositionToSpawn;
     }
+    
     
     public void ResetLevel()
     {
         spawnedLocations = new List<Vector3>();
+        _levelArranger.SetWallValues(bottomWallVisibility, wallHeight);
+        
         foreach (Transform obj in levelHolder)
         {
             Destroy(obj.gameObject);

@@ -116,4 +116,10 @@ public class LevelArranger : MonoBehaviour
             Destroy(obj.gameObject);
         }
     }
+
+    public void SetWallValues(bool bottomWallVisibility, int wallLayers)
+    {
+        bottomWallVisible = bottomWallVisibility;
+        wallLevels = wallLayers;
+    }
 }
