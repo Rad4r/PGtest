@@ -26,11 +26,17 @@ public class LevelGenerator : MonoBehaviour
     
     private LevelArranger _levelArranger;
     private List<Vector3> spawnedLocations;
-    private int roomsLeft;
+    //private int roomsLeft;
+
+
+    private List<Vector3> availablePositions;
+    private Vector3 groundScale;
 
     private void Awake()
     {
         _levelArranger = roomHolder.GetComponent<LevelArranger>();
+        availablePositions = new List<Vector3>();
+        groundScale = roomHolder.transform.GetChild(0).transform.localScale;
     }
 
     private void Start()
@@ -41,54 +47,43 @@ public class LevelGenerator : MonoBehaviour
     public void GenerateLevel()
     {
         ResetLevel();
-        roomsLeft = roomNumbers;
+        //roomsLeft = roomNumbers;
 
         Vector3 spawnPosition = Vector3.zero;
 
         for (int i = 0; i < roomNumbers; i++)
         {
-            GameObject currentRoom = Instantiate(roomHolder, spawnPosition, Quaternion.identity, levelHolder);
+            Instantiate(roomHolder, spawnPosition, Quaternion.identity, levelHolder);
             spawnedLocations.Add(spawnPosition);
-            roomsLeft--;
-
-            Vector3 groundScale = currentRoom.transform.GetChild(0).transform.localScale;
-            
-            spawnPosition = GetNewSpawnPosition(groundScale.x, groundScale.z, spawnPosition);
+            //roomsLeft--;
+            availablePositions.Add(spawnPosition += Vector3.left * (groundScale.x + roomSpacing));
+            availablePositions.Add(spawnPosition += Vector3.right * (groundScale.x + roomSpacing));
+            availablePositions.Add(spawnPosition += Vector3.forward * (groundScale.z + roomSpacing));
+            availablePositions.Add(spawnPosition += Vector3.back * (groundScale.z + roomSpacing));
+            spawnPosition = GetNewSpawnPosition();
         }
     }
 
     //have an availableSpawnPositions list and update it with for each by removing
-    private Vector3 GetNewSpawnPosition(float xRoomScale, float zRoomScale, Vector3 currentSpawnPosition)
+    private Vector3 GetNewSpawnPosition()
     {
-        List<Vector3> positionsToSpawn = new List<Vector3>();
-        positionsToSpawn.Add(currentSpawnPosition += Vector3.left * (xRoomScale + roomSpacing));
-        positionsToSpawn.Add(currentSpawnPosition += Vector3.right * (xRoomScale + roomSpacing));
-        positionsToSpawn.Add(currentSpawnPosition += Vector3.forward * (zRoomScale + roomSpacing));
-        positionsToSpawn.Add(currentSpawnPosition += Vector3.back * (zRoomScale + roomSpacing));
+        int randomSpawnIndex = Random.Range(0, availablePositions.Count);
+        Vector3 newSpawnPoint = availablePositions[randomSpawnIndex];
         
-        bool positionFound = false;
-        Vector3 newPositionToSpawn = Vector3.up * 5f;
-    
-        while (!positionFound)
+        for (int i = 0; i < spawnedLocations.Count; i++)
         {
-            int randomPositionIndex = Random.Range(0, positionsToSpawn.Count);
-            newPositionToSpawn = positionsToSpawn[randomPositionIndex];
-            
-            foreach (Vector3 position in spawnedLocations)
+            if (spawnedLocations[i] ==  newSpawnPoint)
             {
-                if (newPositionToSpawn == position)
-                {
-                    positionsToSpawn.RemoveAt(randomPositionIndex);
-                }
-                else
-                {
-                    spawnedLocations.Add(newPositionToSpawn);
-                    positionFound = true;
-                    break;
-                }
+                availablePositions.RemoveAt(randomSpawnIndex);
+                GetNewSpawnPosition();
+            }
+            else
+            {
+                break;
             }
         }
-        return newPositionToSpawn;
+        
+        return newSpawnPoint;
     }
     
     

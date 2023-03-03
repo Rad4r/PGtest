@@ -956,7 +956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bottomWallVisibility: 1
-  wallHeight: 5
+  wallHeight: 1
   roomNumbers: 3
   roomSpacing: 10
   roomHolder: {fileID: 8039766672191480945, guid: 8ff45396b3b62a04898d22787dfb1287, type: 3}
