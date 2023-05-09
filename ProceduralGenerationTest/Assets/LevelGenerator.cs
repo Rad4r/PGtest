@@ -6,23 +6,17 @@ using Random = UnityEngine.Random;
 
 public class LevelGenerator : MonoBehaviour
 {
-    [SerializeField] 
-    private bool bottomWallVisibility;
+    [SerializeField] private bool bottomWallVisibility;
     
-    [SerializeField] 
-    private int wallHeight;
+    [Range(1,6)][SerializeField] private int wallHeight;
     
-    [SerializeField]
-    private int roomNumbers;
+    [Range(1,10)][SerializeField] private int roomNumbers;
     
-    [SerializeField]
-    private int roomSpacing;
+    [Range(5,20)][SerializeField] private int roomSpacing;
     
-    [SerializeField]
-    private GameObject roomHolder;
+    [SerializeField] private GameObject roomHolder;
     
-    [SerializeField]
-    private Transform levelHolder;
+    [SerializeField] private Transform levelHolder;
     
     private LevelArranger _levelArranger;
     private List<Vector3> spawnedLocations;
