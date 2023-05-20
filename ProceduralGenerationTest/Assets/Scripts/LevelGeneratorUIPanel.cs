@@ -5,21 +5,28 @@ using UnityEngine.UI;
 
 public class LevelGeneratorUIPanel : MonoBehaviour
 {
+    [Header("General")]
+    
     [SerializeField] private RectTransform _rectTransform;
+    [SerializeField] private Button _closePanelButton;
+    [SerializeField] private Transform _buttonArrowTransform;
+    
+    [Header("Camera Settings")]
+    [SerializeField] private Slider _cameraSpeedSlider;
+    [SerializeField] private TMP_Text _cameraSpeedText;
+    [SerializeField] private float _maxCameraSpeed;
+    
+    [Header("Level Generation Settings")]
     
     [SerializeField] private Slider _roomNumberSlider;
     [SerializeField] private Slider _roomSpacingSlider;
-    
     [SerializeField] private TMP_Text _roomNumberText;
     [SerializeField] private TMP_Text _roomSpacingText;
-    
     [SerializeField] private int _maxRoomNumbers;
     [SerializeField] private int _maxRoomSpacing;
 
-    [SerializeField] private Button _closePanelButton;
-    [SerializeField] private Transform _buttonArrowTransform;
-
-    [Header("Wall Buttons")] 
+    [Header("Level Generation Settings")]
+    
     [SerializeField] private GameObject _wallSelectPopup;
     
     [SerializeField] private Button _wallOneInputButton;
@@ -30,6 +37,7 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     [SerializeField] private Button _wallSixInputButton;
 
     public Action<int, float> OnGenerationValueChanged;
+    public Action<float> OnCameraSpeedChanged;
 
     private bool panelIsOpen;
 
@@ -38,13 +46,16 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         panelIsOpen = true;
         _roomNumberSlider.maxValue = _maxRoomNumbers;
         _roomSpacingSlider.maxValue = _maxRoomSpacing;
+        _cameraSpeedSlider.maxValue = _maxCameraSpeed;
         UpdateGenerationValues(0f);
+        UpdateCameraSpeed(10f);
     }
 
     private void OnEnable()
     {
         _roomNumberSlider.onValueChanged.AddListener(UpdateGenerationValues);
         _roomSpacingSlider.onValueChanged.AddListener(UpdateGenerationValues);
+        _cameraSpeedSlider.onValueChanged.AddListener(UpdateCameraSpeed);
         _closePanelButton.onClick.AddListener(CloseOpenPanel);
         // throw new NotImplementedException();
     }
@@ -71,5 +82,11 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         _buttonArrowTransform.localScale = panelIsOpen ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1); 
         // _rectTransform.localPosition = panelIsOpen ? new Vector3(600,0,0) : Vector3.zero; //Need lean tween for smooth
         panelIsOpen = !panelIsOpen;
+    }
+    
+    private void UpdateCameraSpeed(float value)
+    {
+        _cameraSpeedText.text = "" + Mathf.Round(value * 100f) / 100f;
+        OnCameraSpeedChanged?.Invoke(value);
     }
 }

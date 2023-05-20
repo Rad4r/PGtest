@@ -1,13 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class CameraChange : MonoBehaviour
 {
+    [SerializeField] private LevelGeneratorUIPanel _levelGeneratorUIPanel;
     [SerializeField] private float _cameraMoveSpeed;
-    
-    [SerializeField] private Transform _playerCharacter;
-    
-    [SerializeField] private Transform _overviewHolder;
+
+    // [SerializeField] private Transform _playerCharacter;
+    //
+    // [SerializeField] private Transform _overviewHolder;
     
     private Vector3 _overviewPosition;
     private Quaternion _defaultRotation;
@@ -19,11 +21,16 @@ public class CameraChange : MonoBehaviour
         _defaultRotation = transform.rotation;
     }
 
+    private void OnEnable()
+    {
+        _levelGeneratorUIPanel.OnCameraSpeedChanged += ChangeCameraSpeed;
+    }
+
     private void Update()
     {
         transform.position += new Vector3(Input.GetAxis("Horizontal"),0 , Input.GetAxis("Vertical")) * _cameraMoveSpeed * Time.deltaTime;
 
-        if (Input.GetButton("Jump"))
+        if (Input.GetKey(KeyCode.Space))
         {
             transform.position += Vector3.up * _cameraMoveSpeed * Time.deltaTime;
         }
@@ -51,6 +58,11 @@ public class CameraChange : MonoBehaviour
         //
         // if (cameraOnPlayer)
         //     FollowPlayer();
+    }
+
+    private void ChangeCameraSpeed(float speed)
+    {
+        _cameraMoveSpeed = speed;
     }
 
     private void FollowPlayer()
