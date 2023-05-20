@@ -1,22 +1,23 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class LevelGenerator : MonoBehaviour
 {
-    // [SerializeField] private bool _bottomWallVisibility;
+    [SerializeField] private LevelGeneratorUIPanel _levelGeneratorUIPanel;
 
-    // [Range(1,6)][SerializeField] private int _wallHeight;
-    [Range(1,10)][SerializeField] private int _roomNumbers;
-    [Range(5,20)][SerializeField] private int _roomSpacing;
+    private int _roomNumbers;
+    private float _roomSpacing;
     
     [SerializeField] private GameObject _roomHolder;
     [SerializeField] private GameObject _doorPrefab;
     [SerializeField] private Transform _levelHolder;
-    
+    // [SerializeField] private bool _bottomWallVisibility;
+    // [Range(1,6)][SerializeField] private int _wallHeight;
     //private LevelArranger _levelArranger;
+   
     private List<Vector3> _spawnedLocations;
-
     private List<Vector3> _possibleDoorSpawnLocations;
     private List<Vector3> _availableDoorSpawnLocations;
     private int _currentRoomNumber;
@@ -32,9 +33,20 @@ public class LevelGenerator : MonoBehaviour
         _groundScale = _roomHolder.transform.GetChild(0).transform.localScale;
     }
 
+    private void OnEnable()
+    {
+        _levelGeneratorUIPanel.OnGenerationValueChanged += ChangeGenerationSettings;
+    }
+
     private void Start()
     {
         GenerateLevel();
+    }
+
+    private void ChangeGenerationSettings(int rooms, float spacingBetweenRooms)
+    {
+        _roomNumbers = rooms;
+        _roomSpacing = spacingBetweenRooms;
     }
 
     private void SetupDoorSpawnPoints()
