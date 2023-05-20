@@ -76,7 +76,7 @@ public class LevelGenerator : MonoBehaviour
 
     }
 
-    private void SpawnDoors() //need to check if the direction has a room already
+    private void SpawnDoors() //need to check if the direction has a room already (Mainly for multiple doors in a room)
     {
         _availableDoorSpawnLocations = _possibleDoorSpawnLocations;
         Vector3 connectingDoorLocation = _roomsSpawned[_currentRoomNumber].ConnectingDoorToSpawnPosition;
