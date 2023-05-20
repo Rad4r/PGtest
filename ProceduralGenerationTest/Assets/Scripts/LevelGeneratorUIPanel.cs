@@ -28,6 +28,7 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     [Header("Level Generation Settings")]
     
     [SerializeField] private GameObject _wallSelectPopup;
+    [SerializeField] private GameObject[] _wallsToSpawn;
     
     [SerializeField] private Button _wallOneInputButton;
     [SerializeField] private Button _wallTwoInputButton;
@@ -40,6 +41,9 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     public Action<float> OnCameraSpeedChanged;
 
     private bool panelIsOpen;
+
+    [SerializeField] private GameObject _objectToUpdate;
+    [SerializeField] private Image _imageToUpdate;
 
     private void Awake()
     {
@@ -57,7 +61,14 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         _roomSpacingSlider.onValueChanged.AddListener(UpdateGenerationValues);
         _cameraSpeedSlider.onValueChanged.AddListener(UpdateCameraSpeed);
         _closePanelButton.onClick.AddListener(CloseOpenPanel);
-        // throw new NotImplementedException();
+        
+        // Wall Buttons
+        _wallOneInputButton.onClick.AddListener(WallOneClicked);
+        _wallTwoInputButton.onClick.AddListener(WallTwoClicked);
+        _wallThreeInputButton.onClick.AddListener(WallThreeClicked);
+        _wallFourInputButton.onClick.AddListener(WallFourClicked);
+        _wallFiveInputButton.onClick.AddListener(WallFiveClicked);
+        _wallSixInputButton.onClick.AddListener(WallSixClicked);
     }
 
     private void OnDisable()
@@ -67,7 +78,6 @@ public class LevelGeneratorUIPanel : MonoBehaviour
 
     private void UpdateGenerationValues(float value)
     {
-        //int rooms =  Mathf.CeilToInt( _roomNumberSlider.value * _maxRoomNumbers);
         float spacing = Mathf.Round(_roomSpacingSlider.value * 100f) / 100f;
 
         _roomNumberText.text = _roomNumberSlider.value.ToString();
@@ -76,11 +86,10 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         OnGenerationValueChanged?.Invoke(Mathf.RoundToInt(_roomNumberSlider.value), spacing);
     }
 
-    private void CloseOpenPanel()
+    private void CloseOpenPanel()// TO-DO: lean tween for smooth transition
     {
         _rectTransform.pivot = panelIsOpen ? new Vector2(0, 0.5f) : new Vector2(1, 0.5f);
-        _buttonArrowTransform.localScale = panelIsOpen ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1); 
-        // _rectTransform.localPosition = panelIsOpen ? new Vector3(600,0,0) : Vector3.zero; //Need lean tween for smooth
+        _buttonArrowTransform.localScale = panelIsOpen ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
         panelIsOpen = !panelIsOpen;
     }
     
@@ -88,5 +97,56 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     {
         _cameraSpeedText.text = "" + Mathf.Round(value * 100f) / 100f;
         OnCameraSpeedChanged?.Invoke(value);
+    }
+    
+    private void WallOneClicked()
+    {
+        _objectToUpdate = _wallsToSpawn[0];
+        _imageToUpdate = _wallOneInputButton.GetComponentsInChildren<Image>()[1];
+        WallSelectPopUp();
+    }
+    private void WallTwoClicked()
+    {
+        _objectToUpdate = _wallsToSpawn[1];
+        _imageToUpdate = _wallTwoInputButton.GetComponentsInChildren<Image>()[1];
+        WallSelectPopUp();
+    }
+    private void WallThreeClicked()
+    {
+        _objectToUpdate = _wallsToSpawn[2];
+        _imageToUpdate = _wallThreeInputButton.GetComponentsInChildren<Image>()[1];
+        WallSelectPopUp();
+    }
+    private void WallFourClicked()
+    {
+        _objectToUpdate = _wallsToSpawn[3];
+        _imageToUpdate = _wallFourInputButton.GetComponentsInChildren<Image>()[1];
+        WallSelectPopUp();
+    }
+    private void WallFiveClicked()
+    {
+        _objectToUpdate = _wallsToSpawn[4];
+        _imageToUpdate = _wallFiveInputButton.GetComponentsInChildren<Image>()[1];
+        WallSelectPopUp();
+    }
+    private void WallSixClicked()
+    {
+        _objectToUpdate = _wallsToSpawn[5];
+        _imageToUpdate = _wallSixInputButton.GetComponentsInChildren<Image>()[1];
+        WallSelectPopUp();
+    }
+
+    private void WallSelectPopUp()
+    {
+        _wallSelectPopup.SetActive(true);
+    }
+
+
+    public void UpdateWallVisuals(Material wallMaterial, Sprite sprite, Color color)
+    {
+        _objectToUpdate.GetComponent<MeshRenderer>().material = wallMaterial;
+        _imageToUpdate.sprite = sprite;
+        _imageToUpdate.color = color;
+        _wallSelectPopup.SetActive(false);
     }
 }
