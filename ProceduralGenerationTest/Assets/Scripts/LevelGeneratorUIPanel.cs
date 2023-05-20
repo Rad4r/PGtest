@@ -17,6 +17,7 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     [SerializeField] private int _maxRoomSpacing;
 
     [SerializeField] private Button _closePanelButton;
+    [SerializeField] private Transform _buttonArrowTransform;
 
     [Header("Wall Buttons")] 
     [SerializeField] private GameObject _wallSelectPopup;
@@ -67,6 +68,7 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     private void CloseOpenPanel()
     {
         _rectTransform.pivot = panelIsOpen ? new Vector2(0, 0.5f) : new Vector2(1, 0.5f);
+        _buttonArrowTransform.localScale = panelIsOpen ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1); 
         // _rectTransform.localPosition = panelIsOpen ? new Vector3(600,0,0) : Vector3.zero; //Need lean tween for smooth
         panelIsOpen = !panelIsOpen;
     }
