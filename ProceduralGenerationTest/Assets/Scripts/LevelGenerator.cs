@@ -40,7 +40,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
-        GenerateLevel();
+        //GenerateLevel();
     }
 
     private void ChangeGenerationSettings(int rooms, float spacingBetweenRooms)

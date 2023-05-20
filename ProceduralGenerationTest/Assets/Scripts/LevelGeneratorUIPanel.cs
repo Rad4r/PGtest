@@ -36,6 +36,8 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     private void Awake()
     {
         panelIsOpen = true;
+        _roomNumberSlider.maxValue = _maxRoomNumbers;
+        _roomSpacingSlider.maxValue = _maxRoomSpacing;
         UpdateGenerationValues(0f);
     }
 
@@ -54,15 +56,13 @@ public class LevelGeneratorUIPanel : MonoBehaviour
 
     private void UpdateGenerationValues(float value)
     {
-        int roomValue = Mathf.RoundToInt( _roomNumberSlider.value * _maxRoomNumbers);
-        
-        int rooms =  roomValue == 0 ? 1: roomValue;
-        float spacing = Mathf.Round(_roomSpacingSlider.value * _maxRoomSpacing * 100f) / 100f;
+        //int rooms =  Mathf.CeilToInt( _roomNumberSlider.value * _maxRoomNumbers);
+        float spacing = Mathf.Round(_roomSpacingSlider.value * 100f) / 100f;
 
-        _roomNumberText.text = rooms.ToString();
+        _roomNumberText.text = _roomNumberSlider.value.ToString();
         _roomSpacingText.text = spacing.ToString();
         
-        OnGenerationValueChanged?.Invoke(rooms, spacing);
+        OnGenerationValueChanged?.Invoke(Mathf.RoundToInt(_roomNumberSlider.value), spacing);
     }
 
     private void CloseOpenPanel()
