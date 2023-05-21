@@ -52,7 +52,7 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         _roomSpacingSlider.maxValue = _maxRoomSpacing;
         _cameraSpeedSlider.maxValue = _maxCameraSpeed;
         UpdateGenerationValues(0f);
-        UpdateCameraSpeed(10f);
+        UpdateCameraSpeed(1f);
     }
 
     private void OnEnable()

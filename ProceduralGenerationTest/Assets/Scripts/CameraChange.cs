@@ -29,16 +29,42 @@ public class CameraChange : MonoBehaviour
         // {
         //     Application.Quit();
         // }
+
+        if (Input.GetKey(KeyCode.Q))
+        {
+            // Vector3 newPosition = transform.position;
+            // newPosition.x = -transform.position.z;
+            // newPosition.z = transform.position.x;
+            // transform.position = newPosition;
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.down * (_cameraMoveSpeed * 10f * Time.deltaTime));
+
+            // transform.forward += Vector3.left * Time.deltaTime;
+        }
         
-        transform.position += new Vector3(Input.GetAxis("Horizontal"),0 , Input.GetAxis("Vertical")) * _cameraMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.E))
+        {
+            // Vector3 newPosition = transform.position;
+            // newPosition.x = -transform.position.z;
+            // newPosition.z = transform.position.x;
+            // transform.position = newPosition;
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.up * (_cameraMoveSpeed * 10f * Time.deltaTime));
+            
+            // transform.forward += Vector3.right  * Time.deltaTime;
+        }
+
+        Vector3 positionToMove = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
+        positionToMove.y = 0;
+        transform.position += positionToMove * (_cameraMoveSpeed * 10f * Time.deltaTime);
+        
+        // transform.position += new Vector3(transform.right.x * Input.GetAxis("Horizontal"),0 , transform.forward.z * Input.GetAxis("Vertical")) * _cameraMoveSpeed * 10f * Time.deltaTime;// can't move side when on side camera
 
         if (Input.GetKey(KeyCode.Space))
         {
-            transform.position += Vector3.up * _cameraMoveSpeed * Time.deltaTime;
+            transform.position += Vector3.up * (_cameraMoveSpeed * 10f * Time.deltaTime);
         }
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            transform.position += Vector3.down * _cameraMoveSpeed * Time.deltaTime;
+            transform.position += Vector3.down * (_cameraMoveSpeed * 10f * Time.deltaTime);
         }
     }
 

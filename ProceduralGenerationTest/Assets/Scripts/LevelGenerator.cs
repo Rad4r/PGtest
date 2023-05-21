@@ -40,7 +40,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
-        //GenerateLevel();
+        GenerateLevel();
     }
 
     private void ChangeGenerationSettings(int rooms, float spacingBetweenRooms)
@@ -157,7 +157,7 @@ public class LevelGenerator : MonoBehaviour
     }
 }
 
-public struct RoomStructure
+public struct RoomStructure // Make room types and set the doors on each side to be true or false
 {
     public Transform RoomObjectTransform;
     public Vector3 RoomLocation;
