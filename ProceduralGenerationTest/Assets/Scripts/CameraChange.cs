@@ -25,10 +25,10 @@ public class CameraChange : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Application.Quit();
-        }
+        // if (Input.GetKeyDown(KeyCode.Escape))
+        // {
+        //     Application.Quit();
+        // }
         
         transform.position += new Vector3(Input.GetAxis("Horizontal"),0 , Input.GetAxis("Vertical")) * _cameraMoveSpeed * Time.deltaTime;
 
