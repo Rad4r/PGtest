@@ -7,9 +7,6 @@ public class CameraChange : MonoBehaviour
     [SerializeField] private LevelGeneratorUIPanel _levelGeneratorUIPanel;
     [SerializeField] private float _cameraMoveSpeed;
 
-    // [SerializeField] private Transform _playerCharacter;
-    //
-    // [SerializeField] private Transform _overviewHolder;
     
     private Vector3 _overviewPosition;
     private Quaternion _defaultRotation;
@@ -28,6 +25,11 @@ public class CameraChange : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+        
         transform.position += new Vector3(Input.GetAxis("Horizontal"),0 , Input.GetAxis("Vertical")) * _cameraMoveSpeed * Time.deltaTime;
 
         if (Input.GetKey(KeyCode.Space))
@@ -38,26 +40,6 @@ public class CameraChange : MonoBehaviour
         {
             transform.position += Vector3.down * _cameraMoveSpeed * Time.deltaTime;
         }
-
-        // if (Input.GetKeyDown(KeyCode.P))
-        // {
-        //     cameraOnPlayer = !cameraOnPlayer;
-        //     
-        //     if (!cameraOnPlayer)
-        //     {
-        //         transform.parent = overviewHolder;
-        //         transform.position = overviewPosition;
-        //         transform.rotation = defaultRotation;
-        //     }
-        //     else
-        //     {
-        //         transform.parent = playerCharacter;
-        //         transform.localPosition = new Vector3(0,0.5f,0);
-        //     }
-        // }
-        //
-        // if (cameraOnPlayer)
-        //     FollowPlayer();
     }
 
     private void ChangeCameraSpeed(float speed)
