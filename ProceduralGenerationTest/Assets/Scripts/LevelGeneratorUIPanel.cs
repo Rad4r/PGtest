@@ -90,6 +90,7 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     {
         _rectTransform.pivot = panelIsOpen ? new Vector2(0, 0.5f) : new Vector2(1, 0.5f);
         _buttonArrowTransform.localScale = panelIsOpen ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
+        _wallSelectPopup.SetActive(false);
         panelIsOpen = !panelIsOpen;
     }
     
