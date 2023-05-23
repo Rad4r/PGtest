@@ -35,12 +35,12 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     [SerializeField] private Button _wallThreeInputButton;
     [SerializeField] private Button _wallFourInputButton;
     [SerializeField] private Button _wallFiveInputButton;
-    [SerializeField] private Button _wallSixInputButton;
 
     public Action<int, float> OnGenerationValueChanged;
     public Action<float> OnCameraSpeedChanged;
 
     private bool panelIsOpen;
+    private WallInputButton _currentWallInputButton;
 
     [SerializeField] private GameObject _objectToUpdate;
     [SerializeField] private Image _imageToUpdate;
@@ -68,7 +68,6 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         _wallThreeInputButton.onClick.AddListener(WallThreeClicked);
         _wallFourInputButton.onClick.AddListener(WallFourClicked);
         _wallFiveInputButton.onClick.AddListener(WallFiveClicked);
-        _wallSixInputButton.onClick.AddListener(WallSixClicked);
     }
 
     private void OnDisable()
@@ -102,52 +101,37 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     
     private void WallOneClicked()
     {
-        _objectToUpdate = _wallsToSpawn[0];
-        _imageToUpdate = _wallOneInputButton.GetComponentsInChildren<Image>()[1];
-        WallSelectPopUp();
+        WallSelectPopUp(_wallsToSpawn[0], _wallOneInputButton.GetComponent<WallInputButton>());
     }
     private void WallTwoClicked()
     {
-        _objectToUpdate = _wallsToSpawn[1];
-        _imageToUpdate = _wallTwoInputButton.GetComponentsInChildren<Image>()[1];
-        WallSelectPopUp();
+        WallSelectPopUp(_wallsToSpawn[1], _wallTwoInputButton.GetComponent<WallInputButton>());
     }
     private void WallThreeClicked()
     {
-        _objectToUpdate = _wallsToSpawn[2];
-        _imageToUpdate = _wallThreeInputButton.GetComponentsInChildren<Image>()[1];
-        WallSelectPopUp();
+        WallSelectPopUp(_wallsToSpawn[2], _wallThreeInputButton.GetComponent<WallInputButton>());
     }
     private void WallFourClicked()
     {
-        _objectToUpdate = _wallsToSpawn[3];
-        _imageToUpdate = _wallFourInputButton.GetComponentsInChildren<Image>()[1];
-        WallSelectPopUp();
+        WallSelectPopUp(_wallsToSpawn[3], _wallFourInputButton.GetComponent<WallInputButton>());
     }
     private void WallFiveClicked()
     {
-        _objectToUpdate = _wallsToSpawn[4];
-        _imageToUpdate = _wallFiveInputButton.GetComponentsInChildren<Image>()[1];
-        WallSelectPopUp();
-    }
-    private void WallSixClicked()
-    {
-        _objectToUpdate = _wallsToSpawn[5];
-        _imageToUpdate = _wallSixInputButton.GetComponentsInChildren<Image>()[1];
-        WallSelectPopUp();
+        WallSelectPopUp(_wallsToSpawn[4], _wallFiveInputButton.GetComponent<WallInputButton>());
     }
 
-    private void WallSelectPopUp()
+    private void WallSelectPopUp(GameObject wallToAffect, WallInputButton wallInputButton)
     {
+        _objectToUpdate = wallToAffect;
+        _currentWallInputButton = wallInputButton;
         _wallSelectPopup.SetActive(true);
     }
-
-
+    
     public void UpdateWallVisuals(Material wallMaterial, Sprite sprite, Color color)
     {
+        _currentWallInputButton.UpdateButtonImage(sprite, color);
+        
         _objectToUpdate.GetComponent<MeshRenderer>().material = wallMaterial;
-        _imageToUpdate.sprite = sprite;
-        _imageToUpdate.color = color;
         _wallSelectPopup.SetActive(false);
     }
 }
