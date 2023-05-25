@@ -62,12 +62,6 @@ public class LevelGenerator : MonoBehaviour
     public void GenerateLevel()
     {
         ResetLevel();
-        _roomsSpawned = new List<RoomStructure>();
-        _currentRoomNumber = 0;
-        
-        _newRoomStructureToSpawn.ConnectingDoorToSpawnPosition = Vector3.zero;
-        _newRoomStructureToSpawn.RoomLocation = Vector3.zero;
-
         SpawnRoom();
 
         while (_currentRoomNumber < _roomNumbers)
@@ -78,21 +72,20 @@ public class LevelGenerator : MonoBehaviour
 
     private void SpawnRoom()
     {
-        GameObject newRoom = Instantiate(_roomHolder, _newRoomStructureToSpawn.RoomLocation, Quaternion.identity, _levelHolder);
-        _newRoomStructureToSpawn.RoomObjectTransform = newRoom.transform;
+        GameObject newRoom = Instantiate(_roomHolder, _newRoomStructureToSpawn.GetRoomPosition, Quaternion.identity, _levelHolder);
+        _newRoomStructureToSpawn.SetRoomObjectTransform(newRoom.transform);
         _roomsSpawned.Add(_newRoomStructureToSpawn);
         
         _newRoomStructureToSpawn = new RoomStructure();
         SpawnDoors();
         _currentRoomNumber++;
-
     }
 
     private void SpawnDoors() //need to check if the direction has a room already (Mainly for multiple doors in a room)
     {
         _availableDoorSpawnLocations = _possibleDoorSpawnLocations;
-        Vector3 connectingDoorLocation = _roomsSpawned[_currentRoomNumber].ConnectingDoorToSpawnPosition;
-        Transform roomParent = _roomsSpawned[_currentRoomNumber].RoomObjectTransform;
+        Vector3 connectingDoorLocation = _roomsSpawned[_currentRoomNumber].GetConnectingDoorPosition;
+        Transform roomParent = _roomsSpawned[_currentRoomNumber].GetRoomTransform;
         
         if (connectingDoorLocation != Vector3.zero)
         {
@@ -108,27 +101,27 @@ public class LevelGenerator : MonoBehaviour
         int randomNumber = Random.Range(0,_availableDoorSpawnLocations.Count); //Can Loop
         Vector3 randomSideToSpawn = _availableDoorSpawnLocations[randomNumber];
         Vector3 spawnLocation = randomSideToSpawn;
+        Vector3 newRoomSpawnLocation = randomSideToSpawn;
 
         if (randomSideToSpawn.x != 0) //Spawned in the x axis
         {
             spawnLocation.x = randomSideToSpawn.x * _groundScale.x * 0.5f;
             Instantiate(_doorPrefab, spawnLocation, Quaternion.Euler(0,90,0), roomParent).transform.localPosition = spawnLocation;
+
+            newRoomSpawnLocation.x = randomSideToSpawn.x * _groundScale.x + _roomSpacing * randomSideToSpawn.x;
             
-            _newRoomStructureToSpawn.RoomLocation = randomSideToSpawn;
-            _newRoomStructureToSpawn.RoomLocation.x = randomSideToSpawn.x * _groundScale.x + _roomSpacing * randomSideToSpawn.x;
-            _newRoomStructureToSpawn.RoomLocation += _roomsSpawned[_currentRoomNumber].RoomLocation;
         }
         else if (randomSideToSpawn.z != 0)
         {
             spawnLocation.z = randomSideToSpawn.z * _groundScale.z * 0.5f;
             Instantiate(_doorPrefab, spawnLocation, Quaternion.identity, roomParent).transform.localPosition = spawnLocation;
             
-            _newRoomStructureToSpawn.RoomLocation = randomSideToSpawn;
-            _newRoomStructureToSpawn.RoomLocation.z = randomSideToSpawn.z * _groundScale.z + _roomSpacing * randomSideToSpawn.z;
-            _newRoomStructureToSpawn.RoomLocation += _roomsSpawned[_currentRoomNumber].RoomLocation;
+            newRoomSpawnLocation.z = randomSideToSpawn.z * _groundScale.z + _roomSpacing * randomSideToSpawn.z;
         }
 
-        _newRoomStructureToSpawn.ConnectingDoorToSpawnPosition = randomSideToSpawn * -1;
+        newRoomSpawnLocation += _roomsSpawned[_currentRoomNumber].GetRoomPosition;
+        _newRoomStructureToSpawn.SetRoomPosition(newRoomSpawnLocation);
+        _newRoomStructureToSpawn.SetConnectionDoorPoint(randomSideToSpawn * -1);
     }
 
     private void SpawnConnectingDoors(Transform roomParent, Vector3 connectingDoorLocation)
@@ -149,17 +142,40 @@ public class LevelGenerator : MonoBehaviour
     
     public void ResetLevel()
     {
-        
         foreach (Transform obj in _levelHolder)
         {
             Destroy(obj.gameObject);
         }
+        
+        _roomsSpawned = new List<RoomStructure>();
+        _newRoomStructureToSpawn = new RoomStructure();
+        _currentRoomNumber = 0;
+        _newRoomStructureToSpawn.SetConnectionDoorPoint(Vector3.zero);
+        _newRoomStructureToSpawn.SetRoomPosition(Vector3.zero);
     }
 }
 
-public struct RoomStructure // Make room types and set the doors on each side to be true or false
+public class RoomStructure
 {
-    public Transform RoomObjectTransform;
-    public Vector3 RoomLocation;
-    public Vector3 ConnectingDoorToSpawnPosition;
+    private Transform _roomObjectTransform;
+    private Vector3 _roomLocation;
+    private Vector3 _connectingDoorToSpawnPosition;
+
+    public Transform GetRoomTransform => _roomObjectTransform;
+    public Vector3 GetRoomPosition => _roomLocation;
+    public Vector3 GetConnectingDoorPosition => _connectingDoorToSpawnPosition;
+    public void SetRoomObjectTransform(Transform roomTransform)
+    {
+        _roomObjectTransform = roomTransform;
+    }
+    
+    public void SetRoomPosition(Vector3 roomLocation)
+    {
+        _roomLocation = roomLocation;
+    }
+
+    public void SetConnectionDoorPoint(Vector3 doorConnectPosition)
+    {
+        _connectingDoorToSpawnPosition = doorConnectPosition;
+    }
 }
