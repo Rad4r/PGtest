@@ -83,31 +83,68 @@ public class LevelGenerator : MonoBehaviour
         {
             return;
         }
+        
+        SpawnNewDoors();
+    }
 
+    private void SpawnNewDoors()
+    {
+        // TO-DO Need to check if the point already has a room, if so, make it unavailable and pick a new side 
+        Transform roomParent = _roomsSpawned[_currentRoomNumber].GetRoomTransform;
+        
         int randomNumber = Random.Range(0,_roomsSpawned[_currentRoomNumber].GetAvailableDoorPoints.Count); //Can Loop
         Vector3 randomSideToSpawn = _roomsSpawned[_currentRoomNumber].GetAvailableDoorPoints[randomNumber];
-        Vector3 spawnLocation = randomSideToSpawn;
+        
+        Vector3 doorSpawnLocation = randomSideToSpawn;
         Vector3 newRoomSpawnLocation = randomSideToSpawn;
+        bool rotated = false;
 
         if (randomSideToSpawn.x != 0) //Spawned in the x axis
         {
-            spawnLocation.x = randomSideToSpawn.x * _groundScale.x * 0.5f;
-            Instantiate(_doorPrefab, spawnLocation, Quaternion.Euler(0,90,0), roomParent).transform.localPosition = spawnLocation;
-
+            doorSpawnLocation.x = randomSideToSpawn.x * _groundScale.x * 0.5f;
             newRoomSpawnLocation.x = randomSideToSpawn.x * _groundScale.x + _roomSpacing * randomSideToSpawn.x;
+            rotated = true;
             
         }
         else if (randomSideToSpawn.z != 0)
         {
-            spawnLocation.z = randomSideToSpawn.z * _groundScale.z * 0.5f;
-            Instantiate(_doorPrefab, spawnLocation, Quaternion.identity, roomParent).transform.localPosition = spawnLocation;
-            
+            doorSpawnLocation.z = randomSideToSpawn.z * _groundScale.z * 0.5f;
             newRoomSpawnLocation.z = randomSideToSpawn.z * _groundScale.z + _roomSpacing * randomSideToSpawn.z;
         }
-
+        
         newRoomSpawnLocation += _roomsSpawned[_currentRoomNumber].GetRoomPosition;
-        _newRoomStructureToSpawn.SetRoomPosition(newRoomSpawnLocation);
-        _newRoomStructureToSpawn.SetConnectionDoorPoint(randomSideToSpawn * -1);
+
+        if (PositionOccupied(newRoomSpawnLocation))
+        {
+            _roomsSpawned[_currentRoomNumber].RemovePositionFromAvailability(randomSideToSpawn);
+            SpawnNewDoors();
+        }
+        else
+        {
+            if (rotated)
+            {
+                Instantiate(_doorPrefab, doorSpawnLocation, Quaternion.Euler(0,90,0), roomParent).transform.localPosition = doorSpawnLocation;
+            }
+            else
+            {
+                Instantiate(_doorPrefab, doorSpawnLocation, Quaternion.identity, roomParent).transform.localPosition = doorSpawnLocation;
+            }
+            _newRoomStructureToSpawn.SetRoomPosition(newRoomSpawnLocation);
+            _newRoomStructureToSpawn.SetConnectionDoorPoint(randomSideToSpawn * -1);
+        }
+    }
+
+    private bool PositionOccupied(Vector3 positionToCheck) // Can shorten apparently
+    {
+        foreach (RoomStructure room in _roomsSpawned)
+        {
+            if (room.GetRoomPosition == positionToCheck)
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     private void SpawnConnectingDoors(Transform roomParent, Vector3 connectingDoorLocation)
@@ -173,5 +210,10 @@ public class RoomStructure
     {
         _connectingDoorToSpawnPosition = doorConnectPosition;
         _availableDoorPoints.Remove(doorConnectPosition);
+    }
+
+    public void RemovePositionFromAvailability(Vector3 position)
+    {
+        _availableDoorPoints.Remove(position);
     }
 }
