@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bottomWallVisible: 0
-  wallLevels: 2
+  wallLevels: 1
   wallObjects:
   - {fileID: 4610249463981603166, guid: a73b372320d3c5d45b67459848271adf, type: 3}
   - {fileID: 3331206396062201942, guid: 35a599bc1974ec74c950514790418690, type: 3}
