@@ -7,15 +7,14 @@ public class CameraChange : MonoBehaviour
     [SerializeField] private LevelGeneratorUIPanel _levelGeneratorUIPanel;
     private float _cameraMoveSpeed;
 
-    
-    private Vector3 _overviewPosition;
-    private Quaternion _defaultRotation;
+    private Vector3 _defaultCameraPosition;
+    private Quaternion _defaultCameraRotation;
     private bool _cameraOnPlayer;
 
     private void Awake()
     {
-        _overviewPosition = transform.position;
-        _defaultRotation = transform.rotation;
+        _defaultCameraPosition = transform.position;
+        _defaultCameraRotation = transform.rotation;
     }
 
     private void OnEnable()
@@ -25,6 +24,11 @@ public class CameraChange : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetCamera();
+        }
+        
         if (Input.GetKey(KeyCode.Q))
         {
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.down * ( 40f * Time.deltaTime));
@@ -37,15 +41,16 @@ public class CameraChange : MonoBehaviour
 
         Vector3 positionToMove = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
         positionToMove.y = 0;
-        transform.position += positionToMove * (_cameraMoveSpeed * 10f * Time.deltaTime);
+        transform.position += positionToMove * (_cameraMoveSpeed * 20f * Time.deltaTime);
+        transform.position += transform.forward * (Input.mouseScrollDelta.y * _cameraMoveSpeed * 1000f * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.Space))
         {
-            transform.position += Vector3.up * (_cameraMoveSpeed * 10f * Time.deltaTime);
+            transform.position += Vector3.up * (_cameraMoveSpeed * 20f * Time.deltaTime);
         }
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            transform.position += Vector3.down * (_cameraMoveSpeed * 10f * Time.deltaTime);
+            transform.position += Vector3.down * (_cameraMoveSpeed * 20f * Time.deltaTime);
         }
     }
 
@@ -54,8 +59,9 @@ public class CameraChange : MonoBehaviour
         _cameraMoveSpeed = speed;
     }
 
-    private void FollowPlayer()
+    private void ResetCamera()
     {
-        transform.LookAt(Input.mousePosition, Vector3.up);
+        transform.position = _defaultCameraPosition;
+        transform.rotation = _defaultCameraRotation;
     }
 }

@@ -41,6 +41,14 @@ public class LevelGenerator : MonoBehaviour
         GenerateLevel();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            GenerateLevel();
+        }
+    }
+
     private void ChangeGenerationSettings(int rooms, float spacingBetweenRooms)
     {
         _roomNumbers = rooms;
@@ -64,10 +72,27 @@ public class LevelGenerator : MonoBehaviour
         GameObject newRoom = Instantiate(_roomHolder, _newRoomStructureToSpawn.GetRoomPosition, Quaternion.identity, _levelHolder);
         _newRoomStructureToSpawn.SetRoomObjectTransform(newRoom.transform);
         _roomsSpawned.Add(_newRoomStructureToSpawn);
+
+        IndicateRoomName();
         
         _newRoomStructureToSpawn = new RoomStructure();
         SpawnDoors();
         _currentRoomNumber++;
+    }
+
+    private void IndicateRoomName()
+    {
+        if (_currentRoomNumber == 0 )
+        {
+            LevelArranger _roomSettings = _newRoomStructureToSpawn.GetRoomTransform.GetComponent<LevelArranger>();
+            _roomSettings.UpdateRoomText("Start");
+        }
+        
+        if (_currentRoomNumber == _roomNumbers -1)
+        {
+            LevelArranger _roomSettings = _newRoomStructureToSpawn.GetRoomTransform.GetComponent<LevelArranger>();
+            _roomSettings.UpdateRoomText("End");
+        }
     }
 
     private void SpawnDoors() //need to check if the direction has a room already (Mainly for multiple doors in a room)

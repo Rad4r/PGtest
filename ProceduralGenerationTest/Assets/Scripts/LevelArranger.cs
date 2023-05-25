@@ -1,11 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class LevelArranger : MonoBehaviour
 {
+    [SerializeField] 
+    private TMP_Text _roomText;
+    
     [SerializeField] 
     private bool bottomWallVisible;
     
@@ -115,6 +119,11 @@ public class LevelArranger : MonoBehaviour
         {
             Destroy(obj.gameObject);
         }
+    }
+
+    public void UpdateRoomText(string roomName)
+    {
+        _roomText.text = roomName;
     }
 
     public void SetWallValues(bool bottomWallVisibility, int wallLayers)

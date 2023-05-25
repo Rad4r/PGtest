@@ -30,6 +30,8 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     [SerializeField] private GameObject _wallSelectPopup;
     [SerializeField] private GameObject[] _wallsToSpawn;
     
+    [SerializeField] private Button _wallSelectCloseButton;
+    
     [SerializeField] private Button _wallOneInputButton;
     [SerializeField] private Button _wallTwoInputButton;
     [SerializeField] private Button _wallThreeInputButton;
@@ -55,6 +57,14 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         UpdateCameraSpeed(1f);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            CloseOpenPanel();
+        }
+    }
+
     private void OnEnable()
     {
         _roomNumberSlider.onValueChanged.AddListener(UpdateGenerationValues);
@@ -63,16 +73,13 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         _closePanelButton.onClick.AddListener(CloseOpenPanel);
         
         // Wall Buttons
+        _wallSelectCloseButton.onClick.AddListener(CloseWallPopUp);
+        
         _wallOneInputButton.onClick.AddListener(WallOneClicked);
         _wallTwoInputButton.onClick.AddListener(WallTwoClicked);
         _wallThreeInputButton.onClick.AddListener(WallThreeClicked);
         _wallFourInputButton.onClick.AddListener(WallFourClicked);
         _wallFiveInputButton.onClick.AddListener(WallFiveClicked);
-    }
-
-    private void OnDisable()
-    {
-        //Leave it for now
     }
 
     private void UpdateGenerationValues(float value)
@@ -125,6 +132,11 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         _objectToUpdate = wallToAffect;
         _currentWallInputButton = wallInputButton;
         _wallSelectPopup.SetActive(true);
+    }
+    
+    private void CloseWallPopUp()
+    {
+        _wallSelectPopup.SetActive(false);
     }
     
     public void UpdateWallVisuals(Material wallMaterial, Sprite sprite, Color color)
