@@ -5,13 +5,16 @@ using UnityEngine.Serialization;
 public class CameraChange : MonoBehaviour
 {
     [SerializeField] private LevelGeneratorUIPanel _levelGeneratorUIPanel;
+
+    [SerializeField] private float _cameraSensitivity;
     private float _cameraMoveSpeed;
     private float _cameraRotateSpeed;
 
     private Vector3 _defaultCameraPosition;
     private Quaternion _defaultCameraRotation;
     private bool _cameraOnPlayer;
-
+    Vector3 rotation;
+    
     private void Awake()
     {
         _defaultCameraPosition = transform.position;
@@ -26,6 +29,11 @@ public class CameraChange : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetMouseButton(1))
+        {
+            CameraLookAround(); //if right click held down
+        }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             ResetCamera();
@@ -40,12 +48,12 @@ public class CameraChange : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.up * ( _cameraRotateSpeed * 20f * Time.deltaTime));
         }
-
+        
         Vector3 positionToMove = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
         positionToMove.y = 0;
         transform.position += positionToMove * (_cameraMoveSpeed * 20f * Time.deltaTime);
         transform.position += transform.forward * (Input.mouseScrollDelta.y * _cameraMoveSpeed * 1000f * Time.deltaTime);
-
+        
         if (Input.GetKey(KeyCode.Space))
         {
             transform.position += Vector3.up * (_cameraMoveSpeed * 20f * Time.deltaTime);
@@ -54,6 +62,16 @@ public class CameraChange : MonoBehaviour
         {
             transform.position += Vector3.down * (_cameraMoveSpeed * 20f * Time.deltaTime);
         }
+    }
+
+    private void CameraLookAround()
+    {
+        rotation.x += Input.GetAxis("Mouse X") * _cameraSensitivity;
+        rotation.y += Input.GetAxis("Mouse Y") * _cameraSensitivity;
+        Quaternion xQuat = Quaternion.AngleAxis(rotation.x, Vector3.up);
+        Quaternion yQuat = Quaternion.AngleAxis(rotation.y, Vector3.left);
+        
+        transform.localRotation = xQuat * yQuat; 
     }
 
     private void ChangeCameraSpeed(float speed)
