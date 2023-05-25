@@ -18,8 +18,6 @@ public class LevelGenerator : MonoBehaviour
     //private LevelArranger _levelArranger;
    
     private List<Vector3> _spawnedLocations;
-    private List<Vector3> _possibleDoorSpawnLocations;
-    private List<Vector3> _availableDoorSpawnLocations;
     private int _currentRoomNumber;
     
     private List<RoomStructure> _roomsSpawned;
@@ -29,7 +27,6 @@ public class LevelGenerator : MonoBehaviour
 
     private void Awake() //use collision box size for scale maybe for random assets
     {
-        SetupDoorSpawnPoints();
         _groundScale = _roomHolder.transform.GetChild(0).transform.localScale;
     }
 
@@ -49,17 +46,6 @@ public class LevelGenerator : MonoBehaviour
         _roomSpacing = spacingBetweenRooms;
     }
 
-    private void SetupDoorSpawnPoints()
-    {
-        _possibleDoorSpawnLocations = new List<Vector3>
-        {
-            new Vector3(1, 0, 0),
-            new Vector3(0, 0, 1),
-            new Vector3(-1,0,0),
-            new Vector3(0,0,-1)
-        };
-        _availableDoorSpawnLocations = new List<Vector3>();
-    }
 
     public void GenerateLevel()
     {
@@ -85,13 +71,11 @@ public class LevelGenerator : MonoBehaviour
 
     private void SpawnDoors() //need to check if the direction has a room already (Mainly for multiple doors in a room)
     {
-        _availableDoorSpawnLocations = _possibleDoorSpawnLocations;
         Vector3 connectingDoorLocation = _roomsSpawned[_currentRoomNumber].GetConnectingDoorPosition;
         Transform roomParent = _roomsSpawned[_currentRoomNumber].GetRoomTransform;
         
         if (connectingDoorLocation != Vector3.zero)
         {
-            _availableDoorSpawnLocations.Remove(connectingDoorLocation);
             SpawnConnectingDoors(roomParent, connectingDoorLocation);
         }
 
@@ -100,8 +84,8 @@ public class LevelGenerator : MonoBehaviour
             return;
         }
 
-        int randomNumber = Random.Range(0,_availableDoorSpawnLocations.Count); //Can Loop
-        Vector3 randomSideToSpawn = _availableDoorSpawnLocations[randomNumber];
+        int randomNumber = Random.Range(0,_roomsSpawned[_currentRoomNumber].GetAvailableDoorPoints.Count); //Can Loop
+        Vector3 randomSideToSpawn = _roomsSpawned[_currentRoomNumber].GetAvailableDoorPoints[randomNumber];
         Vector3 spawnLocation = randomSideToSpawn;
         Vector3 newRoomSpawnLocation = randomSideToSpawn;
 
