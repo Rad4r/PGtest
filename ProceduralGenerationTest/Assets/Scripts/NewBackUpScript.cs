@@ -22,8 +22,8 @@ public class NewBackupScript : MonoBehaviour
     private List<Vector3> _availableDoorSpawnLocations;
     private int _currentRoomNumber;
     
-    private List<RoomStructure> _roomsSpawned;
-    private RoomStructure _newRoomStructureToSpawn;
+    private List<RoomStructureComplex> _roomsSpawned;
+    private RoomStructureComplex _newRoomStructureToSpawn;
     
     private Vector3 _groundScale;
 
@@ -64,7 +64,7 @@ public class NewBackupScript : MonoBehaviour
     public void GenerateLevel()
     {
         ResetLevel();
-        _roomsSpawned = new List<RoomStructure>();
+        _roomsSpawned = new List<RoomStructureComplex>();
         _currentRoomNumber = 0;
         
         _newRoomStructureToSpawn.ConnectingDoorToSpawnPosition = Vector3.zero;
@@ -90,7 +90,7 @@ public class NewBackupScript : MonoBehaviour
         // spawn the connecting doors
         // add to the list
         
-        RoomStructure randomRoomStructure = _roomsSpawned[Random.Range(0, _roomsSpawned.Count)];
+        RoomStructureComplex randomRoomStructure = _roomsSpawned[Random.Range(0, _roomsSpawned.Count)];
         Vector3 sideToSpawn = randomRoomStructure.GetRandomAvailablePosition(); // TO-DO: if this is full try some other room.Also maybe ad it to the spawned rooms list
         Vector3 doorSpawnLocation = sideToSpawn;
         Vector3 roomSpawnLocation = new Vector3();
@@ -126,7 +126,7 @@ public class NewBackupScript : MonoBehaviour
             GameObject newRoom = Instantiate(_roomHolder, roomSpawnLocation, Quaternion.identity, randomRoomStructure.RoomObjectTransform);
             SpawnConnectingDoors(newRoom.transform, connectingDoorPosition);
                 
-            _newRoomStructureToSpawn = new RoomStructure
+            _newRoomStructureToSpawn = new RoomStructureComplex
             {
                 RoomLocation = roomSpawnLocation,
                 RoomObjectTransform = newRoom.transform
@@ -143,7 +143,7 @@ public class NewBackupScript : MonoBehaviour
         _newRoomStructureToSpawn.RoomObjectTransform = newRoom.transform;
         _roomsSpawned.Add(_newRoomStructureToSpawn);
         
-        _newRoomStructureToSpawn = new RoomStructure();
+        _newRoomStructureToSpawn = new RoomStructureComplex();
         SpawnDoors();
         _currentRoomNumber++;
     }
@@ -208,7 +208,7 @@ public class NewBackupScript : MonoBehaviour
 
     private bool PositionUnavailable(Vector3 positionToCheck)
     {
-        foreach (RoomStructure room in _roomsSpawned)
+        foreach (RoomStructureComplex room in _roomsSpawned)
         {
             if (room.RoomLocation == positionToCheck)
             {
@@ -227,32 +227,32 @@ public class NewBackupScript : MonoBehaviour
     }
 }
 
-// public struct RoomStructure // Make room types and set the doors on each side to be true or false
-// {
-//     public Transform RoomObjectTransform;
-//     public Vector3 RoomLocation;
-//     public Vector3 ConnectingDoorToSpawnPosition;
-//     private List<Vector3> _availableDoorPositions;
-//
-//     public void SetAvailableDoorPoints(List<Vector3> availablePos, Vector3 removePos)
-//     {
-//         List<Vector3> newPositionList = new List<Vector3>();
-//         availablePos.ForEach(position => newPositionList.Add(position));
-//         newPositionList.Remove(removePos);
-//         _availableDoorPositions = newPositionList;
-//
-//         _availableDoorPositions.ForEach( pos => Debug.Log("position is: "+ pos));
-//     }
-//
-//     public Vector3 GetRandomAvailablePosition() // might return null
-//     {
-//         if (_availableDoorPositions == null)
-//         {
-//             return Vector3.zero;
-//         }
-//         int randomIndex = Random.Range(0, _availableDoorPositions.Count);
-//         Vector3 availablePosition = _availableDoorPositions[randomIndex];
-//         _availableDoorPositions.RemoveAt(randomIndex); //could be error
-//         return availablePosition;
-//     }
-// }
+public struct RoomStructureComplex // Make room types and set the doors on each side to be true or false
+{
+    public Transform RoomObjectTransform;
+    public Vector3 RoomLocation;
+    public Vector3 ConnectingDoorToSpawnPosition;
+    private List<Vector3> _availableDoorPositions;
+
+    public void SetAvailableDoorPoints(List<Vector3> availablePos, Vector3 removePos)
+    {
+        List<Vector3> newPositionList = new List<Vector3>();
+        availablePos.ForEach(position => newPositionList.Add(position));
+        newPositionList.Remove(removePos);
+        _availableDoorPositions = newPositionList;
+
+        _availableDoorPositions.ForEach( pos => Debug.Log("position is: "+ pos));
+    }
+
+    public Vector3 GetRandomAvailablePosition() // might return null
+    {
+        if (_availableDoorPositions == null)
+        {
+            return Vector3.zero;
+        }
+        int randomIndex = Random.Range(0, _availableDoorPositions.Count);
+        Vector3 availablePosition = _availableDoorPositions[randomIndex];
+        _availableDoorPositions.RemoveAt(randomIndex); //could be error
+        return availablePosition;
+    }
+}
