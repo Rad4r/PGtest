@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -134,24 +135,16 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    private bool PositionOccupied(Vector3 positionToCheck) // Can shorten apparently
+    private bool PositionOccupied(Vector3 positionToCheck)
     {
-        foreach (RoomStructure room in _roomsSpawned)
-        {
-            if (room.GetRoomPosition == positionToCheck)
-            {
-                return true;
-            }
-        }
-        
-        return false;
+        return _roomsSpawned.Any(room => room.GetRoomPosition == positionToCheck);
     }
 
     private void SpawnConnectingDoors(Transform roomParent, Vector3 connectingDoorLocation)
     {
         Vector3 connectingSpawnLocation = new Vector3();
         
-        if (connectingDoorLocation.x != 0) //Spawned in the x axis
+        if (connectingDoorLocation.x != 0)
         {
             connectingSpawnLocation.x = connectingDoorLocation.x * _groundScale.x * 0.5f;
             Instantiate(_doorPrefab, connectingSpawnLocation, Quaternion.Euler(0,90,0), roomParent).transform.localPosition = connectingSpawnLocation;
