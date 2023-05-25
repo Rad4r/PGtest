@@ -51,11 +51,13 @@ public class LevelGenerator : MonoBehaviour
 
     private void SetupDoorSpawnPoints()
     {
-        _possibleDoorSpawnLocations = new List<Vector3>();
-        _possibleDoorSpawnLocations.Add(new Vector3(1,0,0));
-        _possibleDoorSpawnLocations.Add(new Vector3(0,0,1));
-        _possibleDoorSpawnLocations.Add(new Vector3(-1,0,0));
-        _possibleDoorSpawnLocations.Add(new Vector3(0,0,-1));
+        _possibleDoorSpawnLocations = new List<Vector3>
+        {
+            new Vector3(1, 0, 0),
+            new Vector3(0, 0, 1),
+            new Vector3(-1,0,0),
+            new Vector3(0,0,-1)
+        };
         _availableDoorSpawnLocations = new List<Vector3>();
     }
 
@@ -160,10 +162,19 @@ public class RoomStructure
     private Transform _roomObjectTransform;
     private Vector3 _roomLocation;
     private Vector3 _connectingDoorToSpawnPosition;
+    private List<Vector3> _availableDoorPoints = new List<Vector3>()
+    {
+        new Vector3(1, 0, 0),
+        new Vector3(0, 0, 1),
+        new Vector3(-1,0,0),
+        new Vector3(0,0,-1)
+    };
 
     public Transform GetRoomTransform => _roomObjectTransform;
     public Vector3 GetRoomPosition => _roomLocation;
     public Vector3 GetConnectingDoorPosition => _connectingDoorToSpawnPosition;
+
+    public List<Vector3> GetAvailableDoorPoints => _availableDoorPoints;
     public void SetRoomObjectTransform(Transform roomTransform)
     {
         _roomObjectTransform = roomTransform;
@@ -177,5 +188,6 @@ public class RoomStructure
     public void SetConnectionDoorPoint(Vector3 doorConnectPosition)
     {
         _connectingDoorToSpawnPosition = doorConnectPosition;
+        _availableDoorPoints.Remove(doorConnectPosition);
     }
 }
