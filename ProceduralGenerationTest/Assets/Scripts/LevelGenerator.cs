@@ -11,6 +11,7 @@ public class LevelGenerator : MonoBehaviour
     private int _roomNumbers;
     private float _roomSpacing;
     
+    [SerializeField] private GameObject _floorPrefab;
     [SerializeField] private GameObject _roomHolder;
     [SerializeField] private GameObject _doorPrefab;
     [SerializeField] private Transform _levelHolder;
@@ -170,17 +171,24 @@ public class LevelGenerator : MonoBehaviour
     private void SpawnConnectingDoors(Transform roomParent, Vector3 connectingDoorLocation)
     {
         Vector3 connectingSpawnLocation = new Vector3();
+        Vector3 hallwayScale = new Vector3(5f,0.1f,5f);
         
         if (connectingDoorLocation.x != 0)
         {
             connectingSpawnLocation.x = connectingDoorLocation.x * _groundScale.x * 0.5f;
             Instantiate(_doorPrefab, connectingSpawnLocation, Quaternion.Euler(0,90,0), roomParent).transform.localPosition = connectingSpawnLocation;
+            hallwayScale.x = _roomSpacing;
         }
         else if (connectingDoorLocation.z != 0)
         {
             connectingSpawnLocation.z = connectingDoorLocation.z * _groundScale.z * 0.5f;
             Instantiate(_doorPrefab, connectingSpawnLocation, Quaternion.identity, roomParent).transform.localPosition = connectingSpawnLocation;
+            hallwayScale.z = _roomSpacing;
         }
+
+        GameObject hallway = Instantiate(_floorPrefab, roomParent);
+        hallway.transform.localScale = hallwayScale;
+        hallway.transform.localPosition = connectingSpawnLocation + connectingDoorLocation * _roomSpacing / 2f;
     }
 
     private void UpdateBottomWallVisibility(bool isVisible)

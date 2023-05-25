@@ -3885,6 +3885,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _levelGeneratorUIPanel: {fileID: 2011899662}
+  _floorPrefab: {fileID: 222414305600284424, guid: b255b5f38fd88a64d81fc177c490e154, type: 3}
   _roomHolder: {fileID: 8039766672191480945, guid: 8ff45396b3b62a04898d22787dfb1287, type: 3}
   _doorPrefab: {fileID: 8045334793226216545, guid: 0c4f516dcf5d8e04ea13175e9154a8fd, type: 3}
   _levelHolder: {fileID: 228598164}
