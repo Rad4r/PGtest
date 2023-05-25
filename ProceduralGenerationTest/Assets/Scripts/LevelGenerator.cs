@@ -34,6 +34,7 @@ public class LevelGenerator : MonoBehaviour
     private void OnEnable()
     {
         _levelGeneratorUIPanel.OnGenerationValueChanged += ChangeGenerationSettings;
+        _levelGeneratorUIPanel.OnBottomWallToggleChanged += UpdateBottomWallVisibility;
     }
 
     private void Start()
@@ -54,7 +55,6 @@ public class LevelGenerator : MonoBehaviour
         _roomNumbers = rooms;
         _roomSpacing = spacingBetweenRooms;
     }
-
 
     public void GenerateLevel()
     {
@@ -142,7 +142,8 @@ public class LevelGenerator : MonoBehaviour
 
         if (PositionOccupied(newRoomSpawnLocation))
         {
-            _roomsSpawned[_currentRoomNumber].RemovePositionFromAvailability(randomSideToSpawn);
+            SpawnConnectingDoors(roomParent, randomSideToSpawn);
+            _roomsSpawned[_currentRoomNumber].RemovePositionFromAvailability(randomSideToSpawn); //spawn connecting door here
             SpawnNewDoors();
         }
         else
@@ -162,6 +163,7 @@ public class LevelGenerator : MonoBehaviour
 
     private bool PositionOccupied(Vector3 positionToCheck)
     {
+        // T0-DO: can spawn a door in the opposite side of random direction
         return _roomsSpawned.Any(room => room.GetRoomPosition == positionToCheck);
     }
 
@@ -180,8 +182,13 @@ public class LevelGenerator : MonoBehaviour
             Instantiate(_doorPrefab, connectingSpawnLocation, Quaternion.identity, roomParent).transform.localPosition = connectingSpawnLocation;
         }
     }
+
+    private void UpdateBottomWallVisibility(bool isVisible)
+    {
+        _roomHolder.GetComponent<LevelArranger>().SetBottomWallVisibility(isVisible);
+    }
     
-    public void ResetLevel()
+    private void ResetLevel()
     {
         foreach (Transform obj in _levelHolder)
         {

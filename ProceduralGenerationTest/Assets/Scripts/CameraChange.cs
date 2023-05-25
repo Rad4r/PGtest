@@ -6,6 +6,7 @@ public class CameraChange : MonoBehaviour
 {
     [SerializeField] private LevelGeneratorUIPanel _levelGeneratorUIPanel;
     private float _cameraMoveSpeed;
+    private float _cameraRotateSpeed;
 
     private Vector3 _defaultCameraPosition;
     private Quaternion _defaultCameraRotation;
@@ -20,6 +21,7 @@ public class CameraChange : MonoBehaviour
     private void OnEnable()
     {
         _levelGeneratorUIPanel.OnCameraSpeedChanged += ChangeCameraSpeed;
+        _levelGeneratorUIPanel.OnCameraRotateChanged += ChangeCameraRotationSpeed;
     }
 
     private void Update()
@@ -31,12 +33,12 @@ public class CameraChange : MonoBehaviour
         
         if (Input.GetKey(KeyCode.Q))
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.down * ( 40f * Time.deltaTime));
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.down * ( _cameraRotateSpeed * 20f * Time.deltaTime));
         }
         
         if (Input.GetKey(KeyCode.E))
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.up * ( 40f * Time.deltaTime));
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.up * ( _cameraRotateSpeed * 20f * Time.deltaTime));
         }
 
         Vector3 positionToMove = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
@@ -57,6 +59,11 @@ public class CameraChange : MonoBehaviour
     private void ChangeCameraSpeed(float speed)
     {
         _cameraMoveSpeed = speed;
+    }
+    
+    private void ChangeCameraRotationSpeed(float speed)
+    {
+        _cameraRotateSpeed = speed;
     }
 
     private void ResetCamera()

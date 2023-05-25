@@ -131,4 +131,9 @@ public class LevelArranger : MonoBehaviour
         bottomWallVisible = bottomWallVisibility;
         wallLevels = wallLayers;
     }
+
+    public void SetBottomWallVisibility(bool visibility)
+    {
+        bottomWallVisible = visibility;
+    }
 }

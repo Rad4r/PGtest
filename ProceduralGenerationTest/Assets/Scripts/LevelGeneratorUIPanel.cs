@@ -10,11 +10,15 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     [SerializeField] private RectTransform _rectTransform;
     [SerializeField] private Button _closePanelButton;
     [SerializeField] private Transform _buttonArrowTransform;
+    [SerializeField] private Toggle _visualizeBottomWallToggle;
     
     [Header("Camera Settings")]
     [SerializeField] private Slider _cameraSpeedSlider;
+    [SerializeField] private Slider _cameraRotateSlider;
     [SerializeField] private TMP_Text _cameraSpeedText;
+    [SerializeField] private TMP_Text _cameraRotateText;
     [SerializeField] private float _maxCameraSpeed;
+    [SerializeField] private float _maxCameraRotate;
     
     [Header("Level Generation Settings")]
     
@@ -40,6 +44,8 @@ public class LevelGeneratorUIPanel : MonoBehaviour
 
     public Action<int, float> OnGenerationValueChanged;
     public Action<float> OnCameraSpeedChanged;
+    public Action<float> OnCameraRotateChanged;
+    public Action<bool> OnBottomWallToggleChanged;
 
     private bool panelIsOpen;
     private WallInputButton _currentWallInputButton;
@@ -53,8 +59,10 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         _roomNumberSlider.maxValue = _maxRoomNumbers;
         _roomSpacingSlider.maxValue = _maxRoomSpacing;
         _cameraSpeedSlider.maxValue = _maxCameraSpeed;
+        _cameraRotateSlider.maxValue = _maxCameraRotate;
         UpdateGenerationValues(0f);
         UpdateCameraSpeed(1f);
+        UpdateCameraRotateSpeed(1f);
     }
 
     private void Update()
@@ -70,7 +78,10 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         _roomNumberSlider.onValueChanged.AddListener(UpdateGenerationValues);
         _roomSpacingSlider.onValueChanged.AddListener(UpdateGenerationValues);
         _cameraSpeedSlider.onValueChanged.AddListener(UpdateCameraSpeed);
+        _cameraRotateSlider.onValueChanged.AddListener(UpdateCameraRotateSpeed);
         _closePanelButton.onClick.AddListener(CloseOpenPanel);
+        
+        _visualizeBottomWallToggle.onValueChanged.AddListener(UpdateBottomWallVisibility);
         
         // Wall Buttons
         _wallSelectCloseButton.onClick.AddListener(CloseWallPopUp);
@@ -104,6 +115,12 @@ public class LevelGeneratorUIPanel : MonoBehaviour
     {
         _cameraSpeedText.text = "" + Mathf.Round(value * 100f) / 100f;
         OnCameraSpeedChanged?.Invoke(value);
+    }
+
+    private void UpdateCameraRotateSpeed(float value)
+    {
+        _cameraRotateText.text = "" + Mathf.Round(value * 100f) / 100f;
+        OnCameraRotateChanged?.Invoke(value);
     }
     
     private void WallOneClicked()
@@ -145,5 +162,10 @@ public class LevelGeneratorUIPanel : MonoBehaviour
         
         _objectToUpdate.GetComponent<MeshRenderer>().material = wallMaterial;
         _wallSelectPopup.SetActive(false);
+    }
+
+    private void UpdateBottomWallVisibility(bool isTrue)
+    {
+        OnBottomWallToggleChanged?.Invoke(isTrue);
     }
 }
