@@ -3932,7 +3932,7 @@ MonoBehaviour:
   _levelGeneratorUIPanel: {fileID: 2011899662}
   _floorPrefab: {fileID: 222414305600284424, guid: b255b5f38fd88a64d81fc177c490e154, type: 3}
   _roomHolder: {fileID: 8039766672191480945, guid: 8ff45396b3b62a04898d22787dfb1287, type: 3}
-  _doorPrefab: {fileID: 8045334793226216545, guid: 0c4f516dcf5d8e04ea13175e9154a8fd, type: 3}
+  _doorPrefab: {fileID: 6185937851196024409, guid: ea51da4cf1acfea49802848e749a5a13, type: 3}
   _levelHolder: {fileID: 228598164}
 --- !u!4 &882385665
 Transform:
@@ -3984,7 +3984,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -14.099976, y: 0}
+  m_AnchoredPosition: {x: -14.100098, y: 0}
   m_SizeDelta: {x: 1300, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &900574373
