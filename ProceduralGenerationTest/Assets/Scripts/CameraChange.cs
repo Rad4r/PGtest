@@ -29,6 +29,11 @@ public class CameraChange : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    
         if (Input.GetMouseButton(1))
         {
             CameraLookAround(); //if right click held down

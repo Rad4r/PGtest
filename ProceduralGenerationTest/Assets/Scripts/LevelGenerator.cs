@@ -206,7 +206,7 @@ public class LevelGenerator : MonoBehaviour
         _roomsSpawned = new List<RoomStructure>();
         _newRoomStructureToSpawn = new RoomStructure();
         _currentRoomNumber = 0;
-        _newRoomStructureToSpawn.SetConnectionDoorPoint(Vector3.zero);
+        _newRoomStructureToSpawn.SetConnectionDoorPoint(Vector3.zero); //don't need I think
         _newRoomStructureToSpawn.SetRoomPosition(Vector3.zero);
     }
 }
